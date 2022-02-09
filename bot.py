@@ -25,20 +25,25 @@ def cmd_start(message):
     elif state == config.States.S_PROCESSING.value:
         bot.send_message(message.chat.id, config.Messages.M_PROCESSING.value)
     else:
-        bot.send_message(message.chat.id, config.Messages.M_SEND_PIC.value)
+        bot.send_message(message.chat.id, config.Messages.M_START.value)
         dbworker.set_state(message.chat.id, config.States.S_SEND_PIC.value)
+
+
+@bot.message_handler(commands=["help"])
+def cmd_start(message):
+    bot.send_message(message.chat.id, config.Messages.M_HELP.value)
 
 
 @bot.message_handler(commands=["reset"])
 def cmd_reset(message):
-    bot.send_message(message.chat.id, config.Messages.M_SEND_PIC.value)
+    bot.send_message(message.chat.id, config.Messages.M_START.value)
     dbworker.set_state(message.chat.id, config.States.S_SEND_PIC.value)
 
 
 @bot.message_handler(content_types=["photo"],
                      func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_SEND_PIC.value)
 def get_pic(message):
-    # try:
+    try:
         raw = message.photo[1].file_id
         got_image_name = raw + ".jpg"
         file_info = bot.get_file(raw)
@@ -48,10 +53,10 @@ def get_pic(message):
         id_images_dict[message.chat.id] = folder + got_image_name
         bot.send_message(message.chat.id, config.Messages.M_PIC_RECIVED.value)
         dbworker.set_state(message.chat.id, config.States.S_SEND_STYLE.value)
-    # except:
-    #     error = config.Messages.E_SEND_PIC.value
-    #     print(error)
-    #     bot.send_message(message.chat.id, error)
+    except:
+        error = config.Messages.E_SEND_PIC.value
+        print(error)
+        bot.send_message(message.chat.id, error)
 
 
 @bot.message_handler(content_types=["photo"],
@@ -77,20 +82,19 @@ def get_style(message):
         bot.send_message(message.chat.id, error)
         return
     try:
-        # print(1)
+        print("Procesing for ", message.chat.id)
         generated_image = return_image(
             id_images_dict[message.chat.id],
             id_style_dict[message.chat.id])
-        # print(2)
         save_image(generated_image, folder + str(message.chat.id) + ".png")
-        # print(3)
+
         bot.send_message(message.chat.id, config.Messages.M_RESULT.value)
         bot.send_photo(message.chat.id, open(folder + str(message.chat.id) + '.png', 'rb'))
-        # print(4)
         path = os.path.join(folder + str(message.chat.id) + '.png')
         os.remove(path)
-        # print(5)
+        print("Done with ", message.chat.id)
         bot.send_message(message.chat.id, config.Messages.M_END.value)
+
         for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
             try:
@@ -100,7 +104,6 @@ def get_style(message):
                     shutil.rmtree(file_path)
             except Exception as e:
                 print('Failed to delete %s. Reason: %s' % (file_path, e))
-
         dbworker.set_state(message.chat.id, config.States.S_START.value)
     except:
         error = config.Messages.E_PROCESSING.value
