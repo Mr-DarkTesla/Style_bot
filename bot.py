@@ -46,25 +46,20 @@ def cmd_reset(message):
 @bot.message_handler(content_types=["photo"],
                      func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_SEND_PIC.value)
 def get_pic(message):
-    # try:
-    raw = message.photo[1].file_id
-    got_image_name = raw + ".jpg"
-    file_info = bot.get_file(raw)
-    downloaded_file = bot.download_file(file_info.file_path)
-    # start_path = '.'
-    # for path, dirs, files in os.walk(start_path):
-    #     for filename in files:
-    #         bot.send_message(message.chat.id, os.path.join(path, filename))
-    with open(folder + got_image_name, 'wb') as new_file:
-        new_file.write(downloaded_file)
-    bot.send_message(message.chat.id, "opened")
-    id_images_dict[message.chat.id] = folder + got_image_name
-    bot.send_message(message.chat.id, config.Messages.M_PIC_RECIVED.value)
-    dbworker.set_state(message.chat.id, config.States.S_SEND_STYLE.value)
-    # except:
-    #     error = config.Messages.E_SEND_PIC.value
-    #     print(error)
-    #     bot.send_message(message.chat.id, error)
+    try:
+        raw = message.photo[1].file_id
+        got_image_name = raw + ".jpg"
+        file_info = bot.get_file(raw)
+        downloaded_file = bot.download_file(file_info.file_path)
+        with open(folder + got_image_name, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        id_images_dict[message.chat.id] = folder + got_image_name
+        bot.send_message(message.chat.id, config.Messages.M_PIC_RECIVED.value)
+        dbworker.set_state(message.chat.id, config.States.S_SEND_STYLE.value)
+    except:
+        error = config.Messages.E_SEND_PIC.value
+        print(error)
+        bot.send_message(message.chat.id, error)
 
 
 @bot.message_handler(content_types=["photo"],

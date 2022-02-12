@@ -10,8 +10,6 @@ from config import is_processing
 
 def return_image(original_image_path, style_image_path):
     is_processing.change(True)
-    model = models.vgg19(pretrained=True).features[:29]
-
     # device = torch.device("cuda" if (torch.cuda.is_available()) else 'cpu')
     device = 'cpu'
 
