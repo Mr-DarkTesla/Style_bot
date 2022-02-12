@@ -1,6 +1,6 @@
 from enum import Enum
 
-token = '5181103933:AAG4SaRyyqC4AytezzrD-x8h-nl9TLkja1w'
+TOKEN = '5181103933:AAG4SaRyyqC4AytezzrD-x8h-nl9TLkja1w'
 db_file = "database.vdb"
 
 
