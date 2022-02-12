@@ -15,7 +15,7 @@ IS_PROCESSING = False
 id_images_dict = {}
 id_style_dict = {}
 
-folder = 'images/'
+folder = './images/'
 
 
 @bot.message_handler(commands=["start"])
