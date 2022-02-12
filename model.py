@@ -8,15 +8,12 @@ from tqdm import tqdm
 from config import is_processing
 
 
-# # Loading the original and the style image
-# original_image = image_loader('house.png')
-# style_image = image_loader('Picasso.png')
-
 def return_image(original_image_path, style_image_path):
     is_processing.change(True)
     model = models.vgg19(pretrained=True).features[:29]
 
-    device = torch.device("cuda" if (torch.cuda.is_available()) else 'cpu')
+    # device = torch.device("cuda" if (torch.cuda.is_available()) else 'cpu')
+    device = 'cpu'
 
     def image_loader(path):
         image = Image.open(path)
