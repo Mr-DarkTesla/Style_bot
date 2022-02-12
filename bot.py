@@ -48,17 +48,14 @@ def cmd_reset(message):
 def get_pic(message):
     try:
         raw = message.photo[1].file_id
-        bot.send_message(message.chat.id, "message")
         got_image_name = raw + ".jpg"
-        bot.send_message(message.chat.id, "got image")
         file_info = bot.get_file(raw)
-        bot.send_message(message.chat.id, "got info")
         downloaded_file = bot.download_file(file_info.file_path)
-
         bot.send_message(message.chat.id, "downloaded")
         with open(folder + got_image_name, 'wb') as new_file:
             new_file.write(downloaded_file)
             bot.send_message(message.chat.id, "open")
+        bot.send_message(message.chat.id, folder + got_image_name)
         id_images_dict[message.chat.id] = folder + got_image_name
         bot.send_message(message.chat.id, config.Messages.M_PIC_RECIVED.value)
         dbworker.set_state(message.chat.id, config.States.S_SEND_STYLE.value)
