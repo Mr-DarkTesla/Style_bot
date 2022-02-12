@@ -51,10 +51,10 @@ def get_pic(message):
     got_image_name = raw + ".jpg"
     file_info = bot.get_file(raw)
     downloaded_file = bot.download_file(file_info.file_path)
-    start_path = '.'
-    for path, dirs, files in os.walk(start_path):
-        for filename in files:
-            bot.send_message(message.chat.id, os.path.join(path, filename))
+    # start_path = '.'
+    # for path, dirs, files in os.walk(start_path):
+    #     for filename in files:
+    #         bot.send_message(message.chat.id, os.path.join(path, filename))
     with open(folder + got_image_name, 'wb') as new_file:
         new_file.write(downloaded_file)
     bot.send_message(message.chat.id, "opened")
