@@ -2,7 +2,7 @@ import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import torch.nn as nn
-import torchvision.models as models
+from torchvision.models import vgg19
 import torch.optim as optim
 from tqdm import tqdm
 from config import is_processing
@@ -28,7 +28,7 @@ def return_image(original_image_path, style_image_path):
         def __init__(self):
             super(VGG, self).__init__()
             self.req_features = ['0', '5', '10', '19', '28']
-            self.model = models.vgg19(pretrained=True).features[:29]
+            self.model = vgg19(pretrained=True).features[:29]
 
         def forward(self, x):
             features = []
@@ -49,7 +49,6 @@ def return_image(original_image_path, style_image_path):
         G = torch.mm(gen.view(channel, height * width), gen.view(channel, height * width).t())
         A = torch.mm(style.view(channel, height * width), style.view(channel, height * width).t())
 
-        # Calcultating the style loss of each layer by calculating the MSE between the gram matrix of the style image and the generated image and adding it to style loss
         style_l = torch.mean((G - A) ** 2)
         return style_l
 
