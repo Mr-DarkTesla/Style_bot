@@ -9,6 +9,9 @@ from config import is_processing
 
 
 def return_image(original_image_path, style_image_path, bot, message):
+    """
+    Processing image
+    """
     is_processing.change(True)
     # device = torch.device("cuda" if (torch.cuda.is_available()) else 'cpu')
     device = 'cpu'
@@ -63,13 +66,13 @@ def return_image(original_image_path, style_image_path, bot, message):
 
     model = VGG().to(device).eval()
 
-    epoch = 50
+    epoches = 50
     lr = 0.005
     content_weight = 1
     style_weight = 100
 
     optimizer = optim.Adam([generated_image], lr=lr)
-    for e in tqdm(range(epoch)):
+    for epoch in tqdm(range(epoches)):
         gen_features = model(generated_image)
         orig_feautes = model(original_image)
         style_featues = model(style_image)
@@ -78,6 +81,6 @@ def return_image(original_image_path, style_image_path, bot, message):
         optimizer.zero_grad()
         total_loss.backward()
         optimizer.step()
-        if e % 10 == 0:
-            bot.send_message(message.chat.id, (str(int((e /epoch) * 100))) + "%")
+        if epoch % 10 == 0:
+            bot.send_message(message.chat.id, (str(int((epoch /epoches) * 100))) + "%", disable_notification=True)
     return generated_image

@@ -18,6 +18,21 @@ id_style_dict = {}
 folder = './images/'
 
 
+def clear(folder):
+    """
+    Deleting all used files
+    """
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
     state = dbworker.get_current_state(message.chat.id)
@@ -33,29 +48,22 @@ def cmd_start(message):
 
 
 @bot.message_handler(commands=["help"])
-def cmd_start(message):
+def cmd_help(message):
     bot.send_message(message.chat.id, config.Messages.M_HELP.value)
 
 
 @bot.message_handler(commands=["reset"])
 def cmd_reset(message):
-    for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
+    clear(folder)
     bot.send_message(message.chat.id, config.Messages.M_START.value)
     dbworker.set_state(message.chat.id, config.States.S_SEND_PIC.value)
 
 
 @bot.message_handler(content_types=["photo"],
                      func=lambda message: dbworker.get_current_state(message.chat.id) == config.States.S_SEND_PIC.value)
-def get_pic(message):
+def get_content_pic(message):
     try:
+        # Downloading and opening pic
         raw = message.photo[1].file_id
         got_image_name = raw + ".jpg"
         file_info = bot.get_file(raw)
@@ -74,8 +82,9 @@ def get_pic(message):
 @bot.message_handler(content_types=["photo"],
                      func=lambda message: dbworker.get_current_state(
                          message.chat.id) == config.States.S_SEND_STYLE.value)
-def get_style(message):
+def get_style_pic(message):
     try:
+        # Downloading and opening pic
         raw = message.photo[1].file_id
         got_style_name = raw + ".jpg"
         file_info = bot.get_file(raw)
@@ -94,7 +103,8 @@ def get_style(message):
         bot.send_message(message.chat.id, error)
         return
     try:
-        print("Procesing for ", message.chat.id)
+        # Processing
+        print("Processing for ", message.chat.id)
         generated_image = return_image(
             id_images_dict[message.chat.id],
             id_style_dict[message.chat.id], bot, message)
@@ -102,20 +112,9 @@ def get_style(message):
 
         bot.send_message(message.chat.id, config.Messages.M_RESULT.value)
         bot.send_photo(message.chat.id, open(folder + str(message.chat.id) + '.png', 'rb'))
-        path = os.path.join(folder + str(message.chat.id) + '.png')
-        os.remove(path)
         print("Done with ", message.chat.id)
         bot.send_message(message.chat.id, config.Messages.M_END.value)
-
-        for filename in os.listdir(folder):
-            file_path = os.path.join(folder, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-            except Exception as e:
-                print('Failed to delete %s. Reason: %s' % (file_path, e))
+        clear(folder)
         dbworker.set_state(message.chat.id, config.States.S_START.value)
     except:
         error = config.Messages.E_PROCESSING.value
@@ -123,6 +122,7 @@ def get_style(message):
         bot.send_message(message.chat.id, error)
 
 
+# Smth magical for deployment
 @server.route('/' + TOKEN, methods=['POST'])
 def getMessage():
     json_string = request.get_data().decode('utf-8')
@@ -140,6 +140,5 @@ def webhook():
 
 if __name__ == "__main__":
     server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
-
 
 # bot.infinity_polling()
