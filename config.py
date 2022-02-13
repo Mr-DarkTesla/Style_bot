@@ -24,7 +24,8 @@ class Messages(Enum):
     M_PIC_RECIVED = "Got it. Now send me something stylish."
     M_SEND_STYLE = "Now send me something stylish."
     M_STYLE_RECIVED = "Good choice."
-    M_PROCESSING = "Wait a minute. I'm not a supercomputer."
+    M_PROCESSING_1 = "Wait a little. eta: 23min"
+    M_PROCESSING_2 = "I'm not a supercomputer after all."
     M_RESULT = "Done!"
     M_END = "See you later. (Use /start again)"
     M_HELP = "/start to start than follow the instructions \n" \

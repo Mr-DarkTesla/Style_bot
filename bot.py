@@ -26,7 +26,7 @@ def cmd_start(message):
     elif state == config.States.S_SEND_STYLE.value:
         bot.send_message(message.chat.id, config.Messages.M_SEND_STYLE.value)
     elif state == config.States.S_PROCESSING.value:
-        bot.send_message(message.chat.id, config.Messages.M_PROCESSING.value)
+        bot.send_message(message.chat.id, config.Messages.M_PROCESSING_2.value)
     else:
         bot.send_message(message.chat.id, config.Messages.M_START.value)
         dbworker.set_state(message.chat.id, config.States.S_SEND_PIC.value)
@@ -39,6 +39,15 @@ def cmd_start(message):
 
 @bot.message_handler(commands=["reset"])
 def cmd_reset(message):
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
     bot.send_message(message.chat.id, config.Messages.M_START.value)
     dbworker.set_state(message.chat.id, config.States.S_SEND_PIC.value)
 
@@ -77,7 +86,7 @@ def get_style(message):
         id_style_dict[message.chat.id] = folder + got_style_name
 
         bot.send_message(message.chat.id, config.Messages.M_STYLE_RECIVED.value)
-        bot.send_message(message.chat.id, config.Messages.M_PROCESSING.value)
+        bot.send_message(message.chat.id, config.Messages.M_PROCESSING_1.value)
         dbworker.set_state(message.chat.id, config.States.S_PROCESSING.value)
     except:
         error = config.Messages.E_SEND_STYLE.value
