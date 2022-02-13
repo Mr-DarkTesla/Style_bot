@@ -15,7 +15,7 @@ def return_image(original_image_path, style_image_path):
 
     def image_loader(path):
         image = Image.open(path)
-        loader = transforms.Compose([transforms.Resize((256, 256)),
+        loader = transforms.Compose([transforms.Resize((64, 64)),
                                      transforms.ToTensor()])
         image = loader(image).unsqueeze(0)
         return image.to(device, torch.float)
