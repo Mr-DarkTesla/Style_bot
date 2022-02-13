@@ -15,7 +15,7 @@ def return_image(original_image_path, style_image_path):
 
     def image_loader(path):
         image = Image.open(path)
-        loader = transforms.Compose([transforms.Resize((64, 64)),
+        loader = transforms.Compose([transforms.Resize((256, 256)),
                                      transforms.ToTensor()])
         image = loader(image).unsqueeze(0)
         return image.to(device, torch.float)
@@ -27,8 +27,8 @@ def return_image(original_image_path, style_image_path):
     class VGG(nn.Module):
         def __init__(self):
             super(VGG, self).__init__()
-            self.req_features = ['0', '5', '10', '19', '28']
-            self.model = vgg19(pretrained=True).features[:29]
+            self.req_features = ['0', '5', '10', '19']
+            self.model = vgg19(pretrained=True).features[:19]
 
         def forward(self, x):
             features = []
