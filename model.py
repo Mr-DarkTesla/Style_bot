@@ -8,7 +8,7 @@ from tqdm import tqdm
 from config import is_processing
 
 
-def return_image(original_image_path, style_image_path):
+def return_image(original_image_path, style_image_path, bot, message):
     is_processing.change(True)
     # device = torch.device("cuda" if (torch.cuda.is_available()) else 'cpu')
     device = 'cpu'
@@ -27,8 +27,8 @@ def return_image(original_image_path, style_image_path):
     class VGG(nn.Module):
         def __init__(self):
             super(VGG, self).__init__()
-            self.req_features = ['0', '5', '10', '19']
-            self.model = vgg19(pretrained=True).features[:19]
+            self.req_features = ['0', '5', '10', '19', '28']
+            self.model = vgg19(pretrained=True).features[:29]
 
         def forward(self, x):
             features = []
@@ -78,4 +78,6 @@ def return_image(original_image_path, style_image_path):
         optimizer.zero_grad()
         total_loss.backward()
         optimizer.step()
+        if e % 10 == 0:
+            bot.send_message(message.chat.id, (str(int((e /epoch) * 100))) + "%")
     return generated_image

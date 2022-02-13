@@ -88,7 +88,7 @@ def get_style(message):
         print("Procesing for ", message.chat.id)
         generated_image = return_image(
             id_images_dict[message.chat.id],
-            id_style_dict[message.chat.id])
+            id_style_dict[message.chat.id], bot, message)
         save_image(generated_image, folder + str(message.chat.id) + ".png")
 
         bot.send_message(message.chat.id, config.Messages.M_RESULT.value)
