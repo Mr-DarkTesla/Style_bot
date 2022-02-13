@@ -63,7 +63,7 @@ def return_image(original_image_path, style_image_path, bot, message):
 
     model = VGG().to(device).eval()
 
-    epoch = 100
+    epoch = 50
     lr = 0.005
     content_weight = 1
     style_weight = 100
