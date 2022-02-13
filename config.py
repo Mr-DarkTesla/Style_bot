@@ -29,7 +29,9 @@ class Messages(Enum):
     M_END = "See you later. (Use /start again)"
     M_HELP = "/start to start than follow the instructions \n" \
              "/reset for strange situations \n" \
-             "/help for ... I don't know. You've just used it..."
+             "/help for ... I don't know. You've just used it... \n" \
+             "Also sometimes (usually after processing) I consume too much memory So try to /reset or wait or" \
+             " repeat your request later."
 
 
 
