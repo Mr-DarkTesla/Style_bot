@@ -33,18 +33,3 @@ class Messages(Enum):
              "/help for ... I don't know. You've just used it... \n" \
              "Also sometimes (usually after processing) I consume too much memory So try to /reset or wait or" \
              " repeat your request later."
-
-
-
-class IS_PROCESSING:
-    def __init__(self):
-        self.is_processing = False
-
-    def __str__(self):
-        return str(self.is_processing)
-
-    def change(self, new_state):
-        assert isinstance(new_state,bool)
-        self.is_processing = new_state
-
-is_processing = IS_PROCESSING()

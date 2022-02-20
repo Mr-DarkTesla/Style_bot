@@ -10,7 +10,6 @@ from flask import Flask, request
 TOKEN = config.TOKEN
 bot = telebot.TeleBot(TOKEN)
 server = Flask(__name__)
-IS_PROCESSING = False
 
 id_images_dict = {}
 id_style_dict = {}
