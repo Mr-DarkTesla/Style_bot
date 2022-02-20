@@ -5,14 +5,12 @@ import torch.nn as nn
 from torchvision.models import vgg19
 import torch.optim as optim
 from tqdm import tqdm
-from config import is_processing
 
 
 def return_image(original_image_path, style_image_path, bot, message):
     """
     Processing image
     """
-    is_processing.change(True)
     # device = torch.device("cuda" if (torch.cuda.is_available()) else 'cpu')
     device = 'cpu'
 
